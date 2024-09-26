@@ -11,7 +11,7 @@ using namespace std;
 
 int file_read(int &N, vector<int>& array1, vector<int>& array2)
 {
-    std::ifstream inputFile("input-1.txt");
+    std::ifstream inputFile("input.txt");
 
     if (!inputFile) {
         std::cerr << "Error opening file!" << std::endl;
