@@ -5,17 +5,13 @@
 #include <sstream>
 #include <vector>
 #include <string>
-/*
-   1.fstreambase
-   2.ifstream ->derived from fstreambase
-   3.ofstrea ->derived from fstreambase
-   2 way to open file 1.) using constructor  2.) using the member function open() of the class
-*/
+#include <queue>
+
 using namespace std;
 
 int  file_read(int &N,vector<int>& array1,vector<int>& array2)
 {
-              std::ifstream inputFile("input-2.txt");
+              std::ifstream inputFile("input-3.txt");
     
     if (!inputFile) {
         std::cerr << "Error opening file!" << std::endl;
@@ -137,22 +133,79 @@ bool check_matrix(int &N,vector<int> & RowSum,vector<int >& ColSum)
 
  };
   
- bool create_matrix(vector<vector<int> >&M,int &N,vector<int> & rowSum,vector<int >& colSum,int i,int j)
- {
-            for (int i = 0; i < N; i++) {
-        for (int j = 0; j < N; j++) {
-            if (rowSum[i] > 0 && colSum[j] > 0) {
-                M[i][j] = 1;  // Place a 1 in the matrix
-                rowSum[i]--;  // Reduce the row and column sums
-                colSum[j]--;
-            }
-        }
-            }
-            return true; 
- }
+//  int  create_matrix(vector<vector<int> >&M,int &N,vector<int> & rowSum,vector<int >& colSum,int i,int j)
+//  {
+//                     if(i==N || j==N)
+//                       {
+                           
+//                       }
+//                     else {
+//                                    if(rowSum[i]>0 && colSum[j]>0)
+//                                     {
+//                                         if(M[i][j]==0)
+//                                             {M[i][j]++;
+//                                             rowSum[i]--;
+//                                             colSum[j]--;
+//                                             };
+//                                         create_matrix(M,N,rowSum,colSum,i+1,j);
+//                                         create_matrix(M,N,rowSum,colSum,i,j+1);
+//                                     }
+//                                     else if(rowSum[i]>0 && colSum[j]==0)
+//                                            {
+//                                                 create_matrix(M,N,rowSum,colSum,i,j+1);
+
+//                                            }
+//                                            else if(rowSum[i]==0 && colSum[j]>0 )
+//                                              { 
+//                                                  create_matrix(M,N,rowSum,colSum,i+1,j);
+//                                              }
+//                                              else if(rowSum[i]==0 && colSum[j]==0)
+//                                                    {
+//                                                       create_matrix(M,N,rowSum,colSum,i+1,j+1);
+//                                                    }
+
+//                                   }  
+//                              return 1;     
+//  }
+//  int  create_matrix(vector<vector<int> >&M,int &N,vector<int> & rowSum,vector<int >& colSum,int i,int j)
+//  {
+//                  vector<pair<int,int>> rowpair,colpair;
+//                 for(int i=0;i<N;i++)
+//                     {
+//                            rowpair.emplace_back(rowSum[i],i);
+//                            colpair.emplace_back(colSum[i],i);
+//                     }  
+//                     // for(int i=0;i<N;i++)
+//                     // {
+//                     //       cout<<rowpair[i].first<<" "<<rowpair[i].second<<" "<<colpair[i].first<<" "<<colpair[i].second<<" "<<endl;
+//                     // }
+//                     sort(rowpair.begin(), rowpair.end(), [](const pair<int, int> &a, const pair<int, int> &b) -> bool {
+//                         if (a.first != b.first)
+//                         return a.first > b.first;
+//                         else
+//                     return a.second < b.second; 
+//                     });
+
+//                     sort(colpair.begin(), colpair.end(), [](const pair<int, int> &a, const pair<int, int> &b) -> bool {
+//                         if (a.first != b.first)
+//                         return a.first > b.first;
+//                         else
+//                     return a.second < b.second; 
+//                     });
+
+//                           for(int i=0;i<N;i++)
+//                        {
+//                             cout<<rowpair[i].first<<" "<<rowpair[i].second<<" "<<colpair[i].first<<" "<<colpair[i].second<<" "<<endl;
+//                        }
+
+                
+//                     return 1;
+                    
+                               
+ //}
 int main() {
 
-    int N;       //order of matrix 
+    int N,r=0,c=0,i,j;       //order of matrix 
     bool  S;     //0 is not possible 1 if possible
     vector<int> RowSum,ColSum;
     file_read(N,RowSum,ColSum);
@@ -170,22 +223,122 @@ int main() {
     }
     cout<<endl<<endl;
     S=check_matrix(N,RowSum,ColSum);
-    cout<<endl<<"Possible or not"<<S<<endl<<endl;
-    int r=0,c=0;
+    cout<<endl<<"Possible or not"<< S <<endl<<endl;
+    vector<int> total_col,remaing_col;
     if(S)
       {
-           create_matrix(M,N,RowSum,ColSum,0,0);
-           for(int i=0;i<N;i++)
+           for(i=0;i<N;i++)                       // converge rowsum
+              {
+                for(int j=0;j<RowSum[i];j++)
+                    {
+                        M[i][j]=1;
+                    }
+              }
+             for(int i=0;i<N;i++)                    //for finding total_col ,remaing_col
+              { r=0;
+                for(int j=0;j<N;j++)
+                   {
+                    
+                    r=r+M[j][i];
+                   }
+                total_col.push_back(r);  
+                remaing_col.push_back(r-ColSum[i]);
+                cout<<r<<" "; 
+              }
+              cout<<endl;
+              for(int i=0;i<N;i++)                   //print colsum
+                 cout<<ColSum[i]<<" ";
+              cout<<endl;
+              r=0;
+              for(int i=0;i<N;i++)                  //print remaing 
+              { r=r+remaing_col[i];
+                 cout<<remaing_col[i]<<" ";
+
+              }
+              cout<<endl<<"Remaing sum:"<<r<<endl;
+           //create_matrix(M,N,RowSum,ColSum,0,0);
+            if(r==0)
+                {
+                     i=0;
+                     j=N-1;
+                     while(i<j)
+                      {
+                            for(int k=0;k<N  && remaing_col[i]!=0 && remaing_col[j]!=0;k++)
+                               {
+                                                if(M[k][i]==1 && M[k][j]==0)
+                                                    {
+                                                        M[k][i]=0;
+                                                        M[k][j]=1;
+                                                        remaing_col[i]-=1;
+                                                        remaing_col[j]+=1;
+
+                                                    } 
+                                                                                        
+                               }
+                            if(remaing_col[i]==0 && remaing_col[j]==0) 
+                               {
+                                   i+=1;
+                                   j-=1;
+                               }
+                            else if(remaing_col[i]!=0 && remaing_col[j]==0) 
+                                 {
+                                
+                                    j=j-1;
+                                 }  
+                                 else if(remaing_col[i]==0 && remaing_col[j]!=0)
+                                       {
+                                           i=i+1;
+                                       }
+
+
+                      }    
+  
+
+
+                }
+            else if (r==0  && S==false )
+                    {
+                        cout<<"0";
+                    }
+            vector<int >check_row,check_col;       
+           for(int i=0;i<N;i++)        //print matrix 
               { r=0;
                 for(int j=0;j<N;j++)
                    {
                     cout<<M[i][j]<<" ";
                     r=r+M[i][j];
+                    
+                
                    }
-                   cout<<r<<" "<<endl;
+                   check_row.push_back(r);
+                   cout<<"\n";
+                  
               }
+              for(int i=0;i<N;i++)        //print matrix 
+              { r=0;
+                for(int j=0;j<N;j++)
+                   {
+                    r=r+M[j][i];
+            
+                   }  
+                   check_col.push_back(r);  
+              }
+               cout<<"\n";
+            for(int i=0;i<N;i++)
+               {
+                  cout<<check_row[i]<<" ";
+               } 
+               cout<<"\n";
+            for(int i=0;i<N;i++)
+               {
+                  cout<<check_col[i]<<" ";
+               } 
+               
+
       }
+    
     else  cout<<endl<<S;  
     return 1 ;
 
 };
+     
